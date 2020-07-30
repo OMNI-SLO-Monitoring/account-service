@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { LogMessageFormat, LogType } from 'logging-format';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { LogMessageFormat, LogType, reportError } from 'logging-format';
+// import { reportError } from "error-reporter";
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +29,7 @@ export class AppComponent {
 
   constructor(private http: HttpClient) { }
 
-  /*
+  /**
     Sends a request to either the database service or the price service corresponding to the selected selectedDestination, selected in the ui
   */
   async sendRequest() {
@@ -54,7 +56,7 @@ export class AppComponent {
     }
   }
 
-  /*
+  /**
     Sends "get balance" request to price service
   */
   async getBalanceFromPriceService() {
@@ -68,7 +70,7 @@ export class AppComponent {
     }
   }
 
-  /*
+  /**
     Sends "get balance" request to database service
   */
   async getBalanceFromDbService() {
@@ -82,7 +84,7 @@ export class AppComponent {
     }
   }
 
-  /*
+  /**
     Sends "get response" request to price service
   */
   async getResponseFromPriceService() {
@@ -96,7 +98,7 @@ export class AppComponent {
     }
   }
 
-  /*
+  /**
     Sends "get response" request to database service
   */
   async getResponseFromDbService() {
@@ -110,7 +112,7 @@ export class AppComponent {
     }
   }
 
-  /*
+  /**
     Sends "get customer name" request to price service
   */
   async getCustomerNameFromPriceService() {
@@ -124,7 +126,7 @@ export class AppComponent {
     }
   }
 
-  /*
+  /**
     Sends "get customer name" request to database service
   */
   async getCustomerNameFromDbService() {
@@ -138,7 +140,7 @@ export class AppComponent {
     }
   }
 
-  /*
+  /**
     Sends "get account worth" request to database service
   */
   async getAccountWorthFromDbService() {
@@ -152,12 +154,14 @@ export class AppComponent {
     }
   }
 
-  /*
+  /**
     Sends "get account worth" request to price service
   */
   async getAccountWorthFromPriceService() {
     try {
-      this.result = await this.http.get(`${this.priceDestination}request/account-worth`).toPromise();
+      this.result = await this.http.get(`${this.priceDestination}request/account-worth`, {observe: 'response'}).toPromise();
+      // const recievedCorrelationId = this.result.headers.get("ErrorCorrelationId");
+      // console.log('Corr', recievedCorrelationId);
       console.log(this.result);
     } catch (error) {
       console.log(error);
@@ -166,26 +170,32 @@ export class AppComponent {
     }
   }
 
-  /*
-    reports an error log to the error monitor, where source is where the error occurs
-    and error is the error that occurs at source
+  /**
+    reports an error to the error monitor
+    
+    @param source the source of the error
+    @param error the error that occoured, if the error already has a correlationId, it will be used when reporting this error
   */
   handleError(source, error) {
-    let log: LogMessageFormat = {
-      source: source, // what exactly should be reported as source is not speccified yet
-      detector: "Account Service", // what exactly should be reported as detector is not speccified yet
-      time: Date.now(),
-      type: LogType.ERROR,
-      data: {
-        expected: "not defined",  // what exactly should be expected value is not defined
-        result: error
-      }
-    }
 
-    console.log("Sending Log", log);
-    this.http.post("http://localhost:3400", log).subscribe(
-      res => console.log("Log reported"),
-      err => console.log("ERROR when reporting log")
-    );
+    const corrId = error.error.correlationId
+    console.log('Corr', corrId);
+    if (isNullOrUndefined(corrId)) {
+      reportError({
+        correlationId: null,
+        log: {
+          detector: "Acount Service",
+          source: source,
+          time: Date.now(),
+          type: LogType.ERROR,
+          data: {
+            expected: "not defined",  // what exactly should be expected value is not defined
+            result: error
+          }
+        }
+      });
+    } else {
+      reportError(error.error);
+    }
   }
 }
