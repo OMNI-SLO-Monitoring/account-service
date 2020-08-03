@@ -103,7 +103,7 @@ export class AppComponent {
   */
   async getResponseFromDbService() {
     try {
-      this.result = await this.http.get(`${this.dbDestination}`).toPromise();
+      this.result = await this.http.get(`${this.dbDestination}`, {responseType: 'text'}).toPromise();
       console.log(this.result);
     } catch (error) {
       console.log(error);
@@ -131,7 +131,7 @@ export class AppComponent {
   */
   async getCustomerNameFromDbService() {
     try {
-      this.result = await this.http.get(`${this.dbDestination}request-handler/customer-name`).toPromise();
+      this.result = await this.http.get(`${this.dbDestination}request-handler/customer-name`, {responseType: 'text'}).toPromise();
       console.log(this.result);
     } catch (error) {
       console.log(error);
