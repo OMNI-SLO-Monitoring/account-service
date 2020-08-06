@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { LogMessageFormat, LogType, reportError } from 'logging-format';
-// import { reportError } from "error-reporter";
+import { HttpClient } from '@angular/common/http';
+import { LogType, reportError } from 'logging-format';
 import { isNullOrUndefined } from 'util';
 
 interface LogOutput {
@@ -69,6 +68,11 @@ export class AppComponent {
     }
   }
 
+  /**
+   * Creates a "log" that will be displayed in the ui
+   * 
+   * @param message that should be displayed
+   */
   printRequestType(message) {
     this.consoleOutput.push({
       message: message,
@@ -76,9 +80,15 @@ export class AppComponent {
     })
   }
 
-  async getRequestDatabaseService(url: string) {
+  /**
+   * Sends a get request to the database service
+   * 
+   * @param url of the get request
+   * @param options for the get request (needed to specify reponseType for "account-worth" which is text not json)
+   */
+  async getRequestDatabaseService(url: string, options?) {
     try {
-      const result: any = await this.http.get(url).toPromise();
+      const result: any = await this.http.get(url, options).toPromise();
       this.consoleOutput.push({
         message: `Successful, Result: ${result}`,
         type: "success"
@@ -94,6 +104,11 @@ export class AppComponent {
     }
   }
 
+  /**
+   * Sends a get request to the price service
+   * 
+   * @param url of the get request
+   */
   async getRequestPricesService(url: string) {
     try {
       const result: any = await this.http.get(url).toPromise();
@@ -123,7 +138,7 @@ export class AppComponent {
     Sends "get balance" request to database service
   */
   async getBalanceFromDbService() {
-    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/balance`);
+    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/balance`, "text");
   }
 
   /**
@@ -151,7 +166,7 @@ export class AppComponent {
     Sends "get customer name" request to database service
   */
   async getCustomerNameFromDbService() {
-    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/customer-name`);
+    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/customer-name`, { responseType: "text" });
   }
 
   /**
