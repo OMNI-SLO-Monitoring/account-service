@@ -3,7 +3,7 @@
 <mat-card>
   <mat-form-field appearance="outline">
     <mat-label>Choose Request Destiniation</mat-label>
-    <mat-select [(ngModel)]="selectedDestination" (change)="sendRequest()">
+    <mat-select [(ngModel)]="selectedDestination" >
       <mat-option [value]="dbDestination">Database Service</mat-option>
       <mat-option [value]="priceDestination">Price Service</mat-option>
     </mat-select>
@@ -11,7 +11,7 @@
   <br>
   <mat-form-field appearance="outline">
     <mat-label>Choose Request</mat-label>
-    <mat-select [(ngModel)]="requestName">
+    <mat-select [(ngModel)]="requestName" >
       <mat-option [value]="getResponse">Get Request</mat-option>
       <mat-option [value]="getBalance">Balance</mat-option>
       <mat-option [value]="getCustomerName">Customer Name</mat-option>
@@ -20,6 +20,13 @@
   </mat-form-field>
   <br>
   <button mat-raised-button (click)="sendRequest()">Send Request</button>
-  <br><br>
-  <p>Result: {{result | json}}</p>
+</mat-card>
+
+<mat-card>
+  <h3>Output</h3>
+  <div *ngFor="let log of consoleOutput">
+    <pre *ngIf="log.type === 'error'" style="color: red;">{{log.message}}</pre>
+    <pre *ngIf="log.type === 'success'">{{log.message}}</pre>
+    <pre *ngIf="log.type === 'info'" style="color: grey">{{log.message}}</pre>
+  </div>
 </mat-card>

@@ -4,6 +4,11 @@ import { LogMessageFormat, LogType, reportError } from 'logging-format';
 // import { reportError } from "error-reporter";
 import { isNullOrUndefined } from 'util';
 
+interface LogOutput {
+  message: string;
+  type: string;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -25,7 +30,7 @@ export class AppComponent {
   requestName: string;
 
   // recieved result from request
-  result: any;
+  consoleOutput: LogOutput[] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -35,24 +40,75 @@ export class AppComponent {
   async sendRequest() {
     if (this.selectedDestination == this.dbDestination) {
       if (this.requestName == this.getBalance) {
-        this.getBalanceFromDbService();
+        this.printRequestType("Requesting Balance")
+        await this.getBalanceFromDbService();
       } else if (this.requestName == this.getResponse) {
-        this.getResponseFromDbService();
+        this.printRequestType("Requesting Default Request")
+        await this.getResponseFromDbService();
       } else if (this.requestName == this.getCustomerName) {
-        this.getCustomerNameFromDbService();
+        this.printRequestType("Requesting Customer Name")
+        await this.getCustomerNameFromDbService();
       } else if (this.requestName == this.getAccountWorth) {
-        this.getAccountWorthFromDbService();
+        this.printRequestType("Requesting Account Worth")
+        await this.getAccountWorthFromDbService();
       }
     } else {
       if (this.requestName == this.getBalance) {
-        this.getBalanceFromPriceService();
+        this.printRequestType("Requesting Balance")
+        await this.getBalanceFromPriceService();
       } else if (this.requestName == this.getResponse) {
-        this.getResponseFromPriceService();
+        this.printRequestType("Requesting Default Request")
+        await this.getResponseFromPriceService();
       } else if (this.requestName == this.getCustomerName) {
-        this.getCustomerNameFromPriceService();
+        this.printRequestType("Requesting Customer Name")
+        await this.getCustomerNameFromPriceService();
       } else if (this.requestName == this.getAccountWorth) {
-        this.getAccountWorthFromPriceService();
+        this.printRequestType("Requesting Account Worth")
+        await this.getAccountWorthFromPriceService();
       }
+    }
+  }
+
+  printRequestType(message) {
+    this.consoleOutput.push({
+      message: message,
+      type: "info"
+    })
+  }
+
+  async getRequestDatabaseService(url: string) {
+    try {
+      const result: any = await this.http.get(url).toPromise();
+      this.consoleOutput.push({
+        message: `Successful, Result: ${result}`,
+        type: "success"
+      })
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+      this.consoleOutput.push({
+        message: "Request failed",
+        type: "error"
+      })
+      this.handleError("Database Service", error);
+    }
+  }
+
+  async getRequestPricesService(url: string) {
+    try {
+      const result: any = await this.http.get(url).toPromise();
+      this.consoleOutput.push({
+        message: `Successful, Result: ${result.result}`,
+        type: "success"
+      })
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+      this.consoleOutput.push({
+        message: "Request failed",
+        type: "error"
+      })
+      this.handleError("Price Service", error);
     }
   }
 
@@ -60,114 +116,56 @@ export class AppComponent {
     Sends "get balance" request to price service
   */
   async getBalanceFromPriceService() {
-    try {
-      this.result = await this.http.get(`${this.priceDestination}request/balance`).toPromise();
-      console.log(this.result);
-    } catch (error) {
-      console.log(error);
-      this.result = error;
-      this.handleError("Price Service", error);
-    }
+    await this.getRequestPricesService(`${this.priceDestination}request/balance`);
   }
 
   /**
     Sends "get balance" request to database service
   */
   async getBalanceFromDbService() {
-    try {
-      this.result = await this.http.get(`${this.dbDestination}request-handler/balance`).toPromise();
-      console.log(this.result);
-    } catch (error) {
-      console.log(error);
-      this.result = error;
-      this.handleError("Database Service", error);
-    }
+    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/balance`);
   }
 
   /**
     Sends "get response" request to price service
   */
   async getResponseFromPriceService() {
-    try {
-      this.result = await this.http.get(`${this.priceDestination}request`).toPromise();
-      console.log(this.result);
-    } catch (error) {
-      console.log(error);
-      this.result = error;
-      this.handleError("Price Service", error);
-    }
+    await this.getRequestPricesService(`${this.priceDestination}request`);
   }
 
   /**
     Sends "get response" request to database service
   */
   async getResponseFromDbService() {
-    try {
-      this.result = await this.http.get(`${this.dbDestination}`).toPromise();
-      console.log(this.result);
-    } catch (error) {
-      console.log(error);
-      this.result = error;
-      this.handleError("Database Service", error);
-    }
+    await this.getRequestDatabaseService(`${this.dbDestination}`);
   }
 
   /**
     Sends "get customer name" request to price service
   */
   async getCustomerNameFromPriceService() {
-    try {
-      this.result = await this.http.get(`${this.priceDestination}request/customer-name`).toPromise();
-      console.log(this.result);
-    } catch (error) {
-      console.log(error);
-      this.result = error;
-      this.handleError("Price Service", error);
-    }
+    await this.getRequestPricesService(`${this.priceDestination}request/customer-name`);
   }
 
   /**
     Sends "get customer name" request to database service
   */
   async getCustomerNameFromDbService() {
-    try {
-      this.result = await this.http.get(`${this.dbDestination}request-handler/customer-name`).toPromise();
-      console.log(this.result);
-    } catch (error) {
-      console.log(error);
-      this.result = error;
-      this.handleError("Database Service", error);
-    }
+    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/customer-name`);
   }
 
   /**
     Sends "get account worth" request to database service
   */
   async getAccountWorthFromDbService() {
-    try {
-      this.result = await this.http.get(`${this.dbDestination}account-worth`).toPromise();
-      console.log(this.result);
-    } catch (error) {
-      console.log(error);
-      this.result = error;
-      this.handleError("Database Service", error);
-    }
+    await this.getRequestDatabaseService(`${this.dbDestination}account-worth`);
   }
 
   /**
     Sends "get account worth" request to price service
   */
   async getAccountWorthFromPriceService() {
-    try {
-      this.result = await this.http.get(`${this.priceDestination}request/account-worth`, {observe: 'response'}).toPromise();
-      // const recievedCorrelationId = this.result.headers.get("ErrorCorrelationId");
-      // console.log('Corr', recievedCorrelationId);
-      console.log(this.result);
-    } catch (error) {
-      console.log(error);
-      this.result = error;
-      this.handleError("Price Service", error);
-    }
+    await this.getRequestPricesService(`${this.priceDestination}request/account-worth`);
   }
 
   /**
@@ -179,7 +177,6 @@ export class AppComponent {
   handleError(source, error) {
 
     const corrId = error.error.correlationId
-    console.log('Corr', corrId);
     if (isNullOrUndefined(corrId)) {
       reportError({
         correlationId: null,
@@ -195,6 +192,7 @@ export class AppComponent {
         }
       });
     } else {
+      error.error.detector = "Account Service"
       reportError(error.error);
     }
   }
