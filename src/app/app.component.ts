@@ -84,11 +84,10 @@ export class AppComponent {
    * Sends a get request to the database service
    * 
    * @param url of the get request
-   * @param options for the get request (needed to specify reponseType for "account-worth" which is text not json)
    */
-  async getRequestDatabaseService(url: string, options?) {
+  async getRequestDatabaseService(url: string) {
     try {
-      const result: any = await this.http.get(url, options).toPromise();
+      const result: any = await this.http.get(url, { responseType: "text" }).toPromise();
       this.consoleOutput.push({
         message: `Successful, Result: ${result}`,
         type: "success"
@@ -138,7 +137,7 @@ export class AppComponent {
     Sends "get balance" request to database service
   */
   async getBalanceFromDbService() {
-    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/balance`, "text");
+    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/balance`);
   }
 
   /**
@@ -166,7 +165,7 @@ export class AppComponent {
     Sends "get customer name" request to database service
   */
   async getCustomerNameFromDbService() {
-    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/customer-name`, { responseType: "text" });
+    await this.getRequestDatabaseService(`${this.dbDestination}request-handler/customer-name`);
   }
 
   /**
