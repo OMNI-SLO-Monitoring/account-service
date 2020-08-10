@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { LogMessageFormat, LogType, reportError } from 'logging-format';
 // import { reportError } from "error-reporter";
 import { isNullOrUndefined } from 'util';
+import { environment } from './../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +12,8 @@ import { isNullOrUndefined } from 'util';
 })
 export class AppComponent {
 
-  dbDestination = "http://localhost:3000/";
-  priceDestination = "http://localhost:3300/";
+  dbDestination = environment.BACKEND_DB_SERVICE_URL;
+  priceDestination = environment.BACKEND_PRICE_SRVICE_URL;
   // selected destination of request in ui
   selectedDestination: string;
 
