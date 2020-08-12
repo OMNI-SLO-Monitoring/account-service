@@ -1,4 +1,4 @@
-Accont Service is a Dummy Service to test different minitor scenarios. The Account Service can send requests to the Database Service and the Price Service.
+Account Service is a Dummy Service to test different monitoring scenarios. The Account Service can send requests to the Database Service and the Price Service.
 
 # AccountServiceFrontend
 
