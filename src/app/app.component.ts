@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LogType, reportError } from 'logging-format';
 import { isNullOrUndefined } from 'util';
+import { environment } from './../environments/environment';
 
 interface LogOutput {
   message: string;
@@ -15,8 +16,8 @@ interface LogOutput {
 })
 export class AppComponent {
 
-  dbDestination = "http://localhost:3000/";
-  priceDestination = "http://localhost:3300/";
+  dbDestination = environment.BACKEND_DB_SERVICE_URL;
+  priceDestination = environment.BACKEND_PRICE_SRVICE_URL;
   // selected destination of request in ui
   selectedDestination: string;
 
