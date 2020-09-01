@@ -4,17 +4,17 @@
 
 export const environment = {
   production: false,
-  BACKEND_DB_SERVICE_URL: "http://localhost:3000/",
-  BACKEND_PRICE_SRVICE_URL: "http://localhost:3300/",
-  BACKEND_RESPONSE_MONITOR_URL: "http://localhost:3400/",
-  BACKEND_CPU_MONITOR_URL: "http://localhost:3100/",
-  BACKEND_ISSUE_CREATOR_URL: "http://localhost:3500/",
+  BACKEND_DB_SERVICE_URL: 'http://localhost:3000/',
+  BACKEND_ACCOUNT_SERVICE_URL: 'http://localhost:3200/',
+  BACKEND_PRICE_SERVICE_URL: 'http://localhost:3300/',
+  BACKEND_RESPONSE_MONITOR_URL: 'http://localhost:3400/',
+  BACKEND_CPU_MONITOR_URL: 'http://localhost:3100/',
+  BACKEND_ISSUE_CREATOR_URL: 'http://localhost:3500/',
 
-  FRONTEND_DB_SERVICE_URL: "http://localhost:4000/",
-  FRONTEND_PRICE_SERVICE_URL: "http://localhost:4300/",
-  FRONTEND_ACCOUNT_SERVICE_URL: "http://localhost:4100/",
-  FRONTEND_MONITORING_SERVICE_URL: "http://localhost:4200/",
-
+  FRONTEND_DB_SERVICE_URL: 'http://localhost:4000/',
+  FRONTEND_PRICE_SERVICE_URL: 'http://localhost:4300/',
+  FRONTEND_ACCOUNT_SERVICE_URL: 'http://localhost:4100/',
+  FRONTEND_MONITORING_SERVICE_URL: 'http://localhost:4200/',
 };
 
 /*

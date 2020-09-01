@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpService } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(private http: HttpService) {}
+
+  async sendRequest(serviceUrl: string, endpoint: string) {
+    return await this.http.get(`${serviceUrl}` + `${endpoint}`);
   }
 }
