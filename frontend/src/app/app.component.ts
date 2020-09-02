@@ -38,9 +38,9 @@ export class AppComponent {
   */
   async sendRequest() {
     if (this.selectedDestination == this.dbDestination) {
-      this.getRequestDatabaseService(`${this.dbDestination}request-handler`);
+      this.getRequestDatabaseService(`${this.dbDestination}request-handler/`);
     } else {
-      this.getRequestPricesService(`${this.priceDestination}request`);
+      this.getRequestPricesService(`${this.priceDestination}request/`);
     }
   }
 

@@ -13,7 +13,7 @@ export class AppController {
     this.endpoint = requestInfo.endpoint;
     return await this.appService.sendRequest(
       this.requestService,
-      this.endpoint,
+      this.endpoint, 
     );
   }
 }
