@@ -33,6 +33,7 @@ export class AppComponent {
 
   /**
    * Sends a request to either the database service or the price service corresponding to the selected selectedDestination, selected in the ui.
+   *
    * Depending on the endpoint selected in the ui which is stored in the variable requestName, the necessary information that is the url of the
    * selected service and the endpoint are passed onto the respective function that conducts the HTTP post request to the backend. The backend
    * then uses the information provided to execute a HTTP get request to the respective service.
@@ -96,7 +97,7 @@ export class AppComponent {
 
   /**
    * Appends a message containing the result of the request to the output log array.
-   * The content in the output log array are visualized in the ui.
+   * The content in the output log array is visualized in the ui.
    *
    * @param result of the request
    */
