@@ -135,11 +135,12 @@ export class AppComponent {
   }
 
   /**
-    reports an error to the error monitor
-    *
-    *@param source the source of the error
+   * Reports an error to the error monitor with a correlationId field, and a log that is populated with the necessary
+   * error information.
+   *
+   * @param source the source of the error
    * @param error the error that occurred, if the error already has a correlationId, it will be used when reporting this error
-  */
+   */
   handleError(source, error) {
     const corrId = error.error.correlationId;
     if (isNullOrUndefined(corrId)) {

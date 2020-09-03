@@ -26,7 +26,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is the backend of the Account Service that is responsible for sending requests to the service that is selected in the Account Service frontend.
 
 ## Installation
 
