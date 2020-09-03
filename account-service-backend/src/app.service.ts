@@ -5,6 +5,11 @@ export class AppService {
   constructor(private http: HttpService) {}
 
   async sendRequest(serviceUrl: string, endpoint: string) {
-    return await this.http.get(`${serviceUrl}` + `${endpoint}`);
+    console.log(`${serviceUrl}` + `${endpoint}`);
+    const res = await this.http
+      .get(`${serviceUrl}` + `${endpoint}`)
+      .toPromise();
+    console.log(res.data);
+    return { result: res.data };
   }
 }

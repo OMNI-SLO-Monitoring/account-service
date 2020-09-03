@@ -8,12 +8,10 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post()
-  async receiveRequestInfo(@Body() requestInfo) {
+  receiveRequestInfo(@Body() requestInfo) {
     this.requestService = requestInfo.requestService;
     this.endpoint = requestInfo.endpoint;
-    return await this.appService.sendRequest(
-      this.requestService,
-      this.endpoint, 
-    );
+    console.log('received');
+    return this.appService.sendRequest(this.requestService, this.endpoint);
   }
 }

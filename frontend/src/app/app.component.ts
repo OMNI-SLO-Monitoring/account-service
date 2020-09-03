@@ -21,12 +21,10 @@ export class AppComponent {
   // selected destination of request in ui
   selectedDestination: string;
 
-  getBalance = '/balance';
-  getCustomerName = '/customer-name';
-  getResponse = '/';
-  getAccountWorth = '/account-worth';
   // selected request in ui
-  requestName: string = '/';
+  requestName: string = '';
+
+  fetchedResult;
 
   // received result from request
   consoleOutput: LogOutput[] = [];
@@ -34,13 +32,48 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   /**
-    Sends a request to either the database service or the price service corresponding to the selected selectedDestination, selected in the ui
+    * Sends a request to either the database service or the price service corresponding to the selected selectedDestination, selected in the ui.
+
   */
   async sendRequest() {
     if (this.selectedDestination == this.dbDestination) {
-      this.getRequestDatabaseService(`${this.dbDestination}request-handler/`);
+      if (this.requestName === '' || this.requestName === 'account-worth') {
+        this.getRequestDatabaseService(`${this.dbDestination}`).subscribe(
+          (data) => {
+            this.fetchedResult = data.result;
+            console.log(this.fetchedResult);
+            this.addResultToOutputLog(this.fetchedResult);
+          },
+          (error) => {
+            this.addErrorToOutputLog(error);
+          }
+        );
+      } else {
+        this.getRequestDatabaseService(
+          `${this.dbDestination}request-handler/`
+        ).subscribe(
+          (data) => {
+            this.fetchedResult = data.result;
+            this.addResultToOutputLog(this.fetchedResult);
+          },
+          (error) => {
+            this.addErrorToOutputLog(error);
+          }
+        );
+      }
     } else {
-      this.getRequestPricesService(`${this.priceDestination}request/`);
+      this.getRequestPricesService(
+        `${this.priceDestination}request/`
+      ).subscribe(
+        (data) => {
+          console.log(data);
+          this.fetchedResult = data.result.result;
+          this.addResultToOutputLog(this.fetchedResult);
+        },
+        (error) => {
+          this.addErrorToOutputLog(error);
+        }
+      );
     }
   }
 
@@ -61,27 +94,27 @@ export class AppComponent {
    *
    * @param url of the get request
    */
-  async getRequestDatabaseService(requestServiceUrl: string) {
-    try {
-      const result = await this.http
-        .post(this.backendDestination, {
-          requestService: requestServiceUrl,
-          endpoint: this.requestName,
-        })
-        .toPromise();
-      this.consoleOutput.push({
-        message: `Successful, Result: ${result}`,
-        type: 'success',
-      });
-      console.log(result);
-    } catch (error) {
-      console.log(error);
-      this.consoleOutput.push({
-        message: 'Request failed',
-        type: 'error',
-      });
-      this.handleError('Database Service', error);
-    }
+  getRequestDatabaseService(requestServiceUrl: string): any {
+    console.log('hi');
+    return this.http.post(this.backendDestination, {
+      requestService: requestServiceUrl,
+      endpoint: this.requestName,
+    });
+  }
+
+  addResultToOutputLog(result) {
+    this.consoleOutput.push({
+      message: `Successful, Result: ${result}`,
+      type: 'success',
+    });
+  }
+
+  addErrorToOutputLog(error) {
+    this.consoleOutput.push({
+      message: 'Request failed',
+      type: 'error',
+    });
+    this.handleError('Price Service', error);
   }
 
   /**
@@ -89,94 +122,12 @@ export class AppComponent {
    *
    * @param url of the get request
    */
-  async getRequestPricesService(requestServiceUrl: string) {
-    try {
-      const result = await this.http
-        .post(this.backendDestination, {
-          requestService: requestServiceUrl,
-          endpoint: this.requestName,
-        })
-        .toPromise();
-      this.consoleOutput.push({
-        message: `Successful, Result: ${result}`,
-        type: 'success',
-      });
-      console.log(result);
-    } catch (error) {
-      console.log(error);
-      this.consoleOutput.push({
-        message: 'Request failed',
-        type: 'error',
-      });
-      this.handleError('Price Service', error);
-    }
+  getRequestPricesService(requestServiceUrl: string): any {
+    return this.http.post(this.backendDestination, {
+      requestService: requestServiceUrl,
+      endpoint: this.requestName,
+    });
   }
-
-  // /**
-  //   Sends "get balance" request to price service
-  // */
-  // async getBalanceFromPriceService() {
-  //   await this.getRequestPricesService(
-  //     `${this.priceDestination}request/balance`
-  //   );
-  // }
-
-  // /**
-  //   Sends "get balance" request to database service
-  // */
-  // async getBalanceFromDbService() {
-  //   await this.getRequestDatabaseService(
-  //     `${this.dbDestination}request-handler/balance`
-  //   );
-  // }
-
-  // /**
-  //   Sends "get response" request to price service
-  // */
-  // async getResponseFromPriceService() {
-  //   await this.getRequestPricesService(`${this.priceDestination}request`);
-  // }
-
-  // /**
-  //   Sends "get response" request to database service
-  // */
-  // async getResponseFromDbService() {
-  //   await this.getRequestDatabaseService(`${this.dbDestination}`);
-  // }
-
-  // /**
-  //   Sends "get customer name" request to price service
-  // */
-  // async getCustomerNameFromPriceService() {
-  //   await this.getRequestPricesService(
-  //     `${this.priceDestination}request/customer-name`
-  //   );
-  // }
-
-  // /**
-  //   Sends "get customer name" request to database service
-  // */
-  // async getCustomerNameFromDbService() {
-  //   await this.getRequestDatabaseService(
-  //     `${this.dbDestination}request-handler/customer-name`
-  //   );
-  // }
-
-  // /**
-  //   Sends "get account worth" request to database service
-  // */
-  // async getAccountWorthFromDbService() {
-  //   await this.getRequestDatabaseService(`${this.dbDestination}account-worth`);
-  // }
-
-  // /**
-  //   Sends "get account worth" request to price service
-  // */
-  // async getAccountWorthFromPriceService() {
-  //   await this.getRequestPricesService(
-  //     `${this.priceDestination}request/account-worth`
-  //   );
-  // }
 
   /**
     reports an error to the error monitor
