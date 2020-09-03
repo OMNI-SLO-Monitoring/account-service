@@ -82,7 +82,7 @@ export class AppComponent {
 
   /**
    * Sends a post request to the backend with the necessary request information which uses it
-   * to send a HTTP get request to the database service service.
+   * to send a HTTP get request to the database service.
    *
    * @param url of the get request
    * @return data of the request
