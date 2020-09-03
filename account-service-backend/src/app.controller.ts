@@ -11,10 +11,11 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   /**
-   * Sends a request to the respective services which were selected in the frontend
+   * Passes the request information to the app service component that conducts the request based on the information
+   * it receives. Simultaneously, the result that is fetched by the request of the app service is also returned.
    *
    * @param requestInfo the data from the frontend containing the selected service and the endpoint
-   * @return the sent request
+   * @return the data of the request conducted by the app service
    */
   @Post()
   receiveRequestInfo(@Body() requestInfo) {
