@@ -32,9 +32,12 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   /**
-    * Sends a request to either the database service or the price service corresponding to the selected selectedDestination, selected in the ui.
-
-  */
+   * Sends a request to either the database service or the price service corresponding to the selected selectedDestination, selected in the ui.
+   * Depending on the endpoint selected in the ui which is stored in the variable requestName, the necessary information that is the url of the
+   * selected service and the endpoint are passed onto the respective function that conducts the HTTP post request to the backend. The backend
+   * then uses the information provided to execute a HTTP get request to the respective service.
+   * The resulting data or error is thereupon added into the output log which is rendered into view in the ui.
+   */
   async sendRequest() {
     if (this.selectedDestination == this.dbDestination) {
       if (this.requestName === '' || this.requestName === 'account-worth') {
@@ -45,7 +48,7 @@ export class AppComponent {
             this.addResultToOutputLog(this.fetchedResult);
           },
           (error) => {
-            this.addErrorToOutputLog(error);
+            this.addErrorToOutputLog(`${this.dbDestination}`, error);
           }
         );
       } else {
@@ -57,7 +60,7 @@ export class AppComponent {
             this.addResultToOutputLog(this.fetchedResult);
           },
           (error) => {
-            this.addErrorToOutputLog(error);
+            this.addErrorToOutputLog(`${this.dbDestination}`, error);
           }
         );
       }
@@ -71,56 +74,58 @@ export class AppComponent {
           this.addResultToOutputLog(this.fetchedResult);
         },
         (error) => {
-          this.addErrorToOutputLog(error);
+          this.addErrorToOutputLog(`${this.priceDestination}`, error);
         }
       );
     }
   }
 
   /**
-   * Creates a "log" that will be displayed in the ui
-   *
-   * @param message that should be displayed
-   */
-  printRequestType(message) {
-    this.consoleOutput.push({
-      message: message,
-      type: 'info',
-    });
-  }
-
-  /**
-   * Sends a get request to the database service
+   * Sends a post request to the backend with the necessary request information which uses it
+   * to send a HTTP get request to the database service service.
    *
    * @param url of the get request
+   * @return data of the request
    */
   getRequestDatabaseService(requestServiceUrl: string): any {
-    console.log('hi');
     return this.http.post(this.backendDestination, {
       requestService: requestServiceUrl,
       endpoint: this.requestName,
     });
   }
 
+  /**
+   * Appends a message containing the result of the request to the output log array.
+   * The content in the output log array are visualized in the ui.
+   *
+   * @param result of the request
+   */
   addResultToOutputLog(result) {
     this.consoleOutput.push({
       message: `Successful, Result: ${result}`,
       type: 'success',
     });
   }
-
-  addErrorToOutputLog(error) {
+  /**
+   * Appends a message containing the error message of the failed request to the output log array.
+   * The content in the output log array is visualized in the ui.
+   *
+   * @param error the error message of the request
+   */
+  addErrorToOutputLog(source, error) {
     this.consoleOutput.push({
       message: 'Request failed',
       type: 'error',
     });
-    this.handleError('Price Service', error);
+    this.handleError(source, error);
   }
 
   /**
-   * Sends a get request to the price service
+   * Sends a post request with the necessary request information to the backend which uses it
+   * to send a HTTP get request to the price service.
    *
    * @param url of the get request
+   * @return data of the request
    */
   getRequestPricesService(requestServiceUrl: string): any {
     return this.http.post(this.backendDestination, {
@@ -131,9 +136,9 @@ export class AppComponent {
 
   /**
     reports an error to the error monitor
-    
-    @param source the source of the error
-    @param error the error that occurred, if the error already has a correlationId, it will be used when reporting this error
+    *
+    *@param source the source of the error
+   * @param error the error that occurred, if the error already has a correlationId, it will be used when reporting this error
   */
   handleError(source, error) {
     const corrId = error.error.correlationId;
@@ -141,7 +146,7 @@ export class AppComponent {
       reportError({
         correlationId: null,
         log: {
-          detector: 'Account Service',
+          detector: `${environment.BACKEND_ACCOUNT_SERVICE_URL}`,
           source: source,
           time: Date.now(),
           type: LogType.ERROR,
@@ -152,7 +157,7 @@ export class AppComponent {
         },
       });
     } else {
-      error.error.detector = 'Account Service';
+      error.error.detector = `${environment.BACKEND_ACCOUNT_SERVICE_URL}`;
       reportError(error.error);
     }
   }
