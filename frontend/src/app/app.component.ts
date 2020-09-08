@@ -148,8 +148,8 @@ export class AppComponent {
       reportError({
         correlationId: null,
         log: {
-          detector: `${environment.BACKEND_ACCOUNT_SERVICE_URL}`,
-          source: source,
+          detectorUrl: `${environment.BACKEND_ACCOUNT_SERVICE_URL}`,
+          sourceUrl: source,
           time: Date.now(),
           type: LogType.ERROR,
           data: {
