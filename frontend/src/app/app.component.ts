@@ -154,13 +154,13 @@ export class AppComponent {
           type: LogType.ERROR,
           data: {
             expected: 'not defined', // what exactly should be expected value is not defined
-            result: error,
+            actual: error,
           },
         },
-      });
+      }, environment.BACKEND_RESPONSE_MONITOR_URL);
     } else {
       error.error.detector = `${environment.BACKEND_ACCOUNT_SERVICE_URL}`;
-      reportError(error.error);
+      reportError(error.error, environment.BACKEND_RESPONSE_MONITOR_URL);
     }
   }
 }
