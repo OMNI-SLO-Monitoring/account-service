@@ -4,20 +4,27 @@ import { LogType, reportError } from 'logging-format';
 import { isNullOrUndefined } from 'util';
 import { environment } from './../environments/environment';
 
+/**
+ * used format that outputs to the frontend have
+ */
 interface LogOutput {
   message: string;
   type: string;
 }
 
+/**
+ * Component for user to be able to send different requests to
+ * the Database Service or Price Service
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  dbDestination = environment.BACKEND_DB_SERVICE_URL;
-  priceDestination = environment.BACKEND_PRICE_SERVICE_URL;
-  backendDestination = environment.BACKEND_ACCOUNT_SERVICE_URL;
+  private dbDestination = environment.BACKEND_DB_SERVICE_URL;
+  private priceDestination = environment.BACKEND_PRICE_SERVICE_URL;
+  private backendDestination = environment.BACKEND_ACCOUNT_SERVICE_URL;
   // selected destination of request in ui
   selectedDestination: string;
 
