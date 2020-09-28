@@ -3,9 +3,9 @@
 <mat-card>
   <mat-form-field appearance="outline">
     <mat-label>Choose Request Destination</mat-label>
-    <mat-select [(ngModel)]="selectedDestination">
-      <mat-option [value]="dbDestination">Database Service</mat-option>
-      <mat-option [value]="priceDestination">Price Service</mat-option>
+    <mat-select [(ngModel)]="selectedDestination" required>
+      <mat-option value="dbDestination">Database Service</mat-option>
+      <mat-option value="priceDestination">Price Service</mat-option>
     </mat-select>
   </mat-form-field>
   <br />

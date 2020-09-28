@@ -47,7 +47,8 @@ export class AppComponent {
    * The resulting data or error is thereupon added into the output log which is rendered into view in the ui.
    */
   async sendRequest() {
-    if (this.selectedDestination == this.dbDestination) {
+    if(this.selectedDestination) {
+    if (this.selectedDestination === "dbDestination") {
       if (this.requestName === '' || this.requestName === 'account-worth') {
         this.getRequestDatabaseService(`${this.dbDestination}`).subscribe(
           (data) => {
@@ -86,6 +87,7 @@ export class AppComponent {
         }
       );
     }
+  }
   }
 
   /**
@@ -151,7 +153,7 @@ export class AppComponent {
    */
   handleError(source, error) {
     const corrId = error.error.correlationId;
-    if (isNullOrUndefined(corrId)) {
+    if (corrId === null || corrId === undefined) {
       reportError({
         correlationId: null,
         log: {
