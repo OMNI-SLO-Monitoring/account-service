@@ -53,7 +53,6 @@ export class AppComponent {
         this.getRequestDatabaseService(`${this.dbDestination}`).subscribe(
           (data) => {
             this.fetchedResult = data.result;
-            console.log(this.fetchedResult);
             this.addResultToOutputLog(this.fetchedResult);
           },
           (error) => {
@@ -78,7 +77,6 @@ export class AppComponent {
         `${this.priceDestination}request/`
       ).subscribe(
         (data) => {
-          console.log(data);
           this.fetchedResult = data.result.result;
           this.addResultToOutputLog(this.fetchedResult);
         },
